@@ -270,13 +270,13 @@ function segmentROI(box) {
 
   trackbar.addEventListener('input', () => {
     let alpha = trackbar.value / trackbar.max;
-    watershed('canvasInput', 'canvasOutput', alpha);
+    watershed('canvasInput', 'canvasOutput', alpha,box);
   });
 
   // TRIGGER
   let trigger = document.getElementById('trigger');
   trigger.addEventListener("click", function () {
-    watershed('canvasInput', 'canvasOutput', .07);
+    watershed('canvasInput', 'canvasOutput', .07,box);
   }, false);
 
   // SEGMENTATION CANVAS
@@ -312,11 +312,11 @@ function segmentROI(box) {
  * @param out
  * @param thresh
  */
-function watershed(inn, out, thresh) {
+function watershed(inn, out, thresh,box) {
 
   // Read image
   let src = cv.imread(inn);
-
+  
   // Matrices
   let dst = new cv.Mat();
   let gray = new cv.Mat();
@@ -368,7 +368,8 @@ function watershed(inn, out, thresh) {
   }
   cv.cvtColor(src, dst, cv.COLOR_RGBA2RGB, 0);
   cv.watershed(dst, markers);
-
+  console.log(markers.data);
+  console.log(dst.data);
   // Draw barriers
   for (let i = 0; i < markers.rows; i++) {
     for (let j = 0; j < markers.cols; j++) {
@@ -383,6 +384,11 @@ function watershed(inn, out, thresh) {
 
   // Display it
   cv.imshow(out, dst);
+
+  // var IMAGE_RULER_DEFAULT_POSITION =      new OpenSeadragon.Point(box.xCoord, box.yCoord);
+
+  // var overlay = $CAMIC.viewer.addOverlay(out, IMAGE_RULER_DEFAULT_POSITION, OpenSeadragon.Placement.TOPLEFT);
+  // console.log(overlay);
 
   src.delete();
   dst.delete();

@@ -270,7 +270,7 @@ function segmentROI(box) {
 
   trackbar.addEventListener('input', () => {
     let alpha = trackbar.value / trackbar.max;
-    watershed('canvasInput', 'canvasOutput', alpha);
+    watershed('canvasInput', 'canvasOutput', alpha,box);
   });
 
   // TRIGGER
@@ -312,7 +312,7 @@ function segmentROI(box) {
  * @param out
  * @param thresh
  */
-function watershed(inn, out, thresh) {
+function watershed(inn, out, thresh,box) {
 
   // Read image
   let src = cv.imread(inn);
@@ -383,7 +383,14 @@ function watershed(inn, out, thresh) {
 
   // Display it
   cv.imshow(out, dst);
+  var IMAGE_RULER_DEFAULT_POSITION =      new OpenSeadragon.Point(box.xCoord, box.yCoord);
+  out.style.width = box.width;
+  out.style.height = box.height;
+  out.style.zIndex = 1000;
 
+  var overlay = $CAMIC.viewer.addOverlay(out, IMAGE_RULER_DEFAULT_POSITION, OpenSeadragon.Placement.TOPLEFT);
+  console.log(overlay);
+  
   // Free up memory
 
   src.delete();
